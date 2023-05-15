@@ -14,8 +14,8 @@
 #
 #
 
-# GitHub:       https://github.com/nicksherron/bashhub-server
-FROM golang:1.13-alpine AS build
+# GitHub:       https://github.com/ngaro/bashhub-server
+FROM arm32v7/golang:1.13-alpine AS build
 
 ARG VERSION
 ARG GIT_COMMIT
@@ -26,20 +26,20 @@ ENV CGO_ENABLED=${CGO}
 ENV GOOS=linux
 ENV GO111MODULE=on
 
-WORKDIR /go/src/github.com/nicksherron/bashhub-server
+WORKDIR /go/src/github.com/ngaro/bashhub-server
 
-COPY . /go/src/github.com/nicksherron/bashhub-server/
+COPY . /go/src/github.com/ngaro/bashhub-server/
 
 # gcc/g++ are required to build SASS libraries for extended version
 RUN apk update && \
     apk add --no-cache gcc g++ musl-dev
 
 
-RUN go build  -ldflags "-X github.com/nicksherron/bashhub-server/cmd.Version=${VERSION} -X github.com/nicksherron/bashhub-server/cmd.GitCommit=${GIT_COMMIT} -X github.com/nicksherron/bashhub-server/cmd.BuildDate=${BUILD_DATE}" -o /go/bin/bashhub-server
+RUN go build  -ldflags "-X github.com/ngaro/bashhub-server/cmd.Version=${VERSION} -X github.com/ngaro/bashhub-server/cmd.GitCommit=${GIT_COMMIT} -X github.com/ngaro/bashhub-server/cmd.BuildDate=${BUILD_DATE}" -o /go/bin/bashhub-server
 
 # ---
 
-FROM alpine:3.11
+FROM arm32v7/alpine:3.11
 
 COPY --from=build /go/bin/bashhub-server /usr/bin/bashhub-server
 
